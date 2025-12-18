@@ -6,6 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import { DashboardLayout } from "./components/dashboard/DashboardLayout";
+import DashboardOverview from "./pages/dashboard/DashboardOverview";
+import DashboardProfile from "./pages/dashboard/DashboardProfile";
+import DashboardRentals from "./pages/dashboard/DashboardRentals";
+import DashboardApplications from "./pages/dashboard/DashboardApplications";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +23,15 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            
+            {/* Dashboard Routes */}
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<DashboardOverview />} />
+              <Route path="profile" element={<DashboardProfile />} />
+              <Route path="rentals" element={<DashboardRentals />} />
+              <Route path="applications" element={<DashboardApplications />} />
+            </Route>
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
