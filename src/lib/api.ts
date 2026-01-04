@@ -45,6 +45,20 @@ export const mernApi = {
       body: JSON.stringify(data),
     }),
 
+  // OAuth (Google) - sends Google id_token to backend for verification / login
+  oauthGoogle: (idToken: string) =>
+    fetchApi(`${API_CONFIG.MERN_BASE_URL}/auth/google`, {
+      method: 'POST',
+      body: JSON.stringify({ idToken }),
+    }),
+
+  // Contact (Sales/Support)
+  contact: (payload: { name: string; email: string; message: string; source?: string }) =>
+    fetchApi(`${API_CONFIG.MERN_BASE_URL}/contact`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
   // Profile
   getProfile: () =>
     fetchApi(`${API_CONFIG.MERN_BASE_URL}/users/profile`),

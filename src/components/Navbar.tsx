@@ -1,12 +1,46 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Music2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  // Refs to detect clicks outside the mobile menu and the toggle button
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const toggleRef = useRef<HTMLButtonElement | null>(null);
+
+  // Close the mobile menu when clicking outside or pressing Escape
+  useEffect(() => {
+    function handlePointerDown(e: PointerEvent | MouseEvent | TouchEvent) {
+      if (!isOpen) return;
+      const target = e.target as Node | null;
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(target) &&
+        toggleRef.current &&
+        !toggleRef.current.contains(target)
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setIsOpen(false);
+    }
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("touchstart", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("touchstart", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
 
   const navLinks = [
-    { name: "Community", href: "#community" },
+    { name: "Community", href: "/community" },
     { name: "Rentals", href: "#rentals" },
     { name: "Learn", href: "#learn" },
     { name: "Jam Pads", href: "#jampads" },
@@ -30,32 +64,47 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
-              >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const isInternal = link.href.startsWith("/");
+              return isInternal ? (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
+                >
+                  {link.name}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+                </Link>
+              ) : (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
+                >
+                  {link.name}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+                </a>
+              );
+            })}
           </div>
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-4">
-            <Button variant="ghost" size="sm">
-              Sign In
+            <Button asChild variant="ghost" size="sm">
+              <Link to="/signin">Sign In</Link>
             </Button>
-            <Button variant="hero" size="sm">
-              Join Free
+            <Button asChild variant="hero" size="sm">
+              <Link to="/signup">Join Free</Link>
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <button
+            ref={toggleRef}
             className="lg:hidden p-2 text-foreground"
             onClick={() => setIsOpen(!isOpen)}
+            aria-expanded={isOpen}
+            aria-controls="mobile-menu"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -63,7 +112,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="lg:hidden py-4 border-t border-border/50 animate-fade-in">
+          <div ref={menuRef} className="lg:hidden py-4 border-t border-border/50 animate-fade-in">
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
                 <a
@@ -76,10 +125,12 @@ const Navbar = () => {
                 </a>
               ))}
               <div className="flex flex-col gap-2 pt-4 border-t border-border/50">
-                <Button variant="ghost" className="justify-start">
-                  Sign In
+                <Button asChild variant="ghost" className="justify-start">
+                  <Link to="/signin">Sign In</Link>
                 </Button>
-                <Button variant="hero">Join Free</Button>
+                <Button asChild variant="hero">
+                  <Link to="/signup">Join Free</Link>
+                </Button>
               </div>
             </div>
           </div>

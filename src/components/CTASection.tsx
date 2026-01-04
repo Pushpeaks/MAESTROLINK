@@ -1,7 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 
-const CTASection = () => {
+interface CTASectionProps {
+  onGetStarted?: () => void;
+  onContactSales?: () => void;
+}
+
+const CTASection = ({ onGetStarted, onContactSales }: CTASectionProps) => {
   return (
     <section className="section-padding relative overflow-hidden">
       {/* Background Effects */}
@@ -31,11 +36,11 @@ const CTASection = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button variant="hero" size="xl" className="group">
+          <Button onClick={() => onGetStarted && onGetStarted()} variant="hero" size="xl" className="group">
             Start Free Today
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
-          <Button variant="glass" size="xl">
+          <Button onClick={() => onContactSales && onContactSales()} variant="glass" size="xl">
             Contact Sales
           </Button>
         </div>

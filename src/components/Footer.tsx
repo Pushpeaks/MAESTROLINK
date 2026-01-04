@@ -1,4 +1,4 @@
-import { Music2, Github, Twitter, Instagram, Youtube } from "lucide-react";
+import { Music2, Twitter, Instagram, Youtube } from "lucide-react";
 
 const footerLinks = {
   Platform: [
@@ -27,7 +27,6 @@ const socialLinks = [
   { icon: Twitter, href: "#", label: "Twitter" },
   { icon: Instagram, href: "#", label: "Instagram" },
   { icon: Youtube, href: "#", label: "YouTube" },
-  { icon: Github, href: "#", label: "GitHub" },
 ];
 
 const Footer = () => {
